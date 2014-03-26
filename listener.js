@@ -3,7 +3,7 @@ var MC = require('../../lib/lib').MongoConnection;
 var MQ = require('../../lib/lib').MongoMQ;
 
 // mongo db 세팅, capped collection 세팅
-var options = {host: 'localhost', databaseName: 'go', queueCollection: 'mongo_queue', autoStart: true,
+var options = {host: 'localhost', databaseName: 'go', queueCollection: 'mongo_queue', autoStart: false,
     serverOptions: {
 		socketOptions: {
 			connectTimeoutMS: 15000,
@@ -25,6 +25,12 @@ var handleRecord = function(err, data, next){
 	if(!err){			
 		console.log('listener err:'+err+', data:'+JSONtoString(data));
 		console.log('data.collection:'+data.collection);
+		
+		mq.stop(function(err){
+			if(err){
+				console.log('mq.stop:'+err);
+			}
+		});
 		
 		var logger = new MC(options);
 		logger.open(function(err, mc){

@@ -26,6 +26,24 @@ var handleRecord = function(err, data, next){
 		console.log('listener err:'+err+', data:'+JSONtoString(data));
 		console.log('data.collection:'+data.collection);
 		
+		var logger = new MC(options);
+		logger.open(function(err, mc){
+			if(err){
+				console.log('ERROR: ', err);
+			}else{
+				mc.collection(data.collection, function(err, loggingCollection){
+					log = loggingCollection;
+					if(!options.autoStart){
+						mq.start(function(err){
+							if(err){
+								console.log(err);
+							}
+						});
+					}
+				});
+			}
+		});
+		
 		log.insert(data,{w:1},  function(err, details){
 			if(!err){
 			   console.log('insert success');
@@ -33,7 +51,7 @@ var handleRecord = function(err, data, next){
 			   console.log('insert fail');
 			}
 		});
-		next(data) );
+		next((data));
 	  }else{
 	    console.log('err: ', err);
 	    next();
@@ -50,7 +68,7 @@ mq.on('greet', handleRecord);
 		if(err){
 			console.log('ERROR: ', err);
 		}else{
-			mc.collection('services', function(err, loggingCollection){
+			mc.collection('push_message', function(err, loggingCollection){
 				log = loggingCollection;
 				if(!options.autoStart){
 					mq.start(function(err){

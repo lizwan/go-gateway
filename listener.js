@@ -37,6 +37,8 @@ var handleRecord = function(err, data, next){
 						mq.start(function(err){
 							if(err){
 								console.log(err);
+							}else{
+								console.log('mq.start success');								
 							}
 						});
 					}

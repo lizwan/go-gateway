@@ -28,16 +28,15 @@ var handleRecord = function(err, data, next){
 		
 		mq.stop(function(err){
 			if(err){
-				console.log('mq.stop:'+err);
+				console.log('mq.stop error:'+err);
 			}
 		});
 		
-		var logger = new MC(options);
 		logger.open(function(err, mc){
 			if(err){
 				console.log('ERROR: ', err);
 			}else{
-				mc.collection(data.collection, function(err, loggingCollection){
+				mc.collection('user', function(err, loggingCollection){
 					log = loggingCollection;
 					if(!options.autoStart){
 						mq.start(function(err){
@@ -70,6 +69,7 @@ var handleRecord = function(err, data, next){
 mq.on('greet', handleRecord);
 
 // listener 실행될때 target collection 세팅, capped collection start
+/*
 (function(){
 	var logger = new MC(options);
 	logger.open(function(err, mc){
@@ -89,6 +89,7 @@ mq.on('greet', handleRecord);
 		}
 	});
 })();
+*/
 
 // json to string function
 function JSONtoString(object) {
